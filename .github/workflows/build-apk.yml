@@ -1,51 +1,13 @@
-name: Build Android APK
-
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Build Web App
-      run: npm run build
-
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v2
-
     - name: Sync Capacitor Android
       run: npx @capacitor/cli sync android
 
     - name: Make gradle wrapper executable
+      working-directory: android
       run: chmod +x gradlew
 
     - name: Build Debug APK
-      run: ../gradlew assembleDebug --no-daemon --stacktrace
       working-directory: android
+      run: ./gradlew assembleDebug --no-daemon --stacktrace
 
     - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: Screen-editor-debug-apk
-        path: android/app/build/outputs/**/*.apk
-        retention-days: 30
+      ...
