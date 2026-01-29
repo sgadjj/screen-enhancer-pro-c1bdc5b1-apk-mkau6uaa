@@ -36,8 +36,11 @@ jobs:
     - name: Sync Capacitor Android
       run: npx @capacitor/cli sync android
 
+    - name: Make gradle wrapper executable
+      run: chmod +x gradlew
+
     - name: Build Debug APK
-      run: ./gradlew assembleDebug --no-daemon --stacktrace
+      run: ../gradlew assembleDebug --no-daemon --stacktrace
       working-directory: android
 
     - name: Upload APK
