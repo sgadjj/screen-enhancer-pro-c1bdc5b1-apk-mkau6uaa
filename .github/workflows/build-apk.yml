@@ -8,31 +8,41 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build Web App
+      run: npm run build
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
-        
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v2  # تم تعديل v3 → v2 لضمان الاستقرار
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
-      with:
-        gradle-version: '8.4'
-        
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v2
+
+    - name: Sync Capacitor Android
+      run: npx @capacitor/cli sync android
+
     - name: Build Debug APK
-      run: ./gradlew assembleDebug --no-daemon --stacktrace  # أضفت ./ لضمان تشغيل Gradle wrapper الصحيح
-      
+      run: ./gradlew assembleDebug --no-daemon --stacktrace
+      working-directory: android
+
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: Screen-editor-debug-apk
-        path: android/app/build/outputs/**/*.apk  # تم تعديل المسار ليتطابق مع مشروع Android
+        path: android/app/build/outputs/**/*.apk
         retention-days: 30
