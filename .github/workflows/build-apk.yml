@@ -20,7 +20,7 @@ jobs:
         distribution: 'temurin'
         
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
+      uses: android-actions/setup-android@v2  # تم تعديل v3 → v2 لضمان الاستقرار
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
@@ -28,11 +28,11 @@ jobs:
         gradle-version: '8.4'
         
     - name: Build Debug APK
-      run: gradle assembleDebug --no-daemon --stacktrace
+      run: ./gradlew assembleDebug --no-daemon --stacktrace  # أضفت ./ لضمان تشغيل Gradle wrapper الصحيح
       
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: Screen-editor-debug-apk
-        path: app/build/outputs/apk/debug/*.apk
+        path: android/app/build/outputs/**/*.apk  # تم تعديل المسار ليتطابق مع مشروع Android
         retention-days: 30
